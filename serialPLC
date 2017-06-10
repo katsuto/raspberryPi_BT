@@ -1,0 +1,115 @@
+import serial
+import bluetooth
+import time
+
+
+
+def comOpen():
+  cport=serial.Serial(
+                port = "/dev/ttyS0",
+                baudrate = 38400,
+                parity = serial.PARITY_NONE,
+                stopbits = serial.STOPBITS_ONE,
+                bytesize = serial.EIGHTBITS,
+                timeout = 0.3,
+                writeTimeout = 0.3
+                )
+  return cport
+
+def computeCheckSum(data):
+  sum = 0
+  for c in data:
+    sum += ord(c)
+    sum %= 0xFF
+  return "{:02X}".format(sum)
+
+def comClear(cport):
+  line = cport.read(1000)
+
+def comPLCReset(cport):
+  cport.write(chr(0x04))  #EOT
+  cport.write(chr(0x0C))  #CL
+  cport.flush()
+  time.sleep(0.3)
+  line = cport.read(1000)
+        
+def comPLCWrite(cport, addr, len, data):
+  line = cport.read(1000) #flush the read port
+  cport.write(chr(0x05))    #ENQ
+  cport.write("F9")         #3C Frame
+  cport.write("0000FF00")   #peer only
+  cport.write("04010000")   #WRITE CMD
+  cport.write("D*")         #Device
+  addrstr = "000000" + addr
+  cport.write(addrstr[-6:]) #"000000" 6chars
+  lenstr = "0000" + len
+  cport.write(lenstr[-4:])  #"0000" 4chars
+  cport.write(data)         #"XXXX" x len chars
+  cport.write(computeCheckSum("F90000FF0004010000D*" + addrstr[-6:] + lenstr[-4:] + data))
+  cport.flush()
+  time.sleep(0.3)
+  line = cport.read(1000)
+  print "send result:" + ord(line[0]) +":"+ line[1:] + "<<<\n"
+  if ord(line[0]) == 0x06:     #ACK
+    print "send successful\n"
+  else:
+    print "send error\n"
+
+def comPLCRead(cport, addr, len):
+  line = cport.read(1000) #flush the read port
+  cport.write(chr(0x05))  #ENQ
+  cport.write("F9")       #3C Frame
+  cport.write("0000FF00") #peer only
+  cport.write("14010000") #READ CMD
+  cport.write("D*")
+  addrstr = "000000" + addr
+  cport.write(addrstr[-6:]) #"000000" 6chars
+  lenstr = "0000" + len
+  cport.write(lenstr[-4:])  #"0000" 4chars
+  cport.write(computeCheckSum("F90000FF0014010000D*" + addrstr[-6:] + lenstr[-4:]))
+  cport.flush()
+  time.sleep(0.3)
+  line = cport.read(1000)
+  print "read result:" + ord(line[0]) +":"+ line[1:11] +":"+line[11:]+ "<<<\n"
+  datalen = 11 + int(len) * 4 # word(2bytes=4chars)
+  data = line[11:datalen]
+  return data
+
+# Main routine
+serial_port=comOpen()
+comClear(serial_port)
+
+server_sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
+port = 1
+server_sock.bind(("",port))
+server_sock.listen(1)
+
+while True:
+  client_sock,address = server_sock.accept()
+  print "Accepted connection from ", address
+  print "\n"
+  try:
+    while True:
+      data = client_sock.recv(1024)
+      print "BT received [%s]\n" % data
+      try:
+      #data 1
+        if data[0] == 
+        serial_port.write(data)
+        serial_port.flush()
+      
+        data = serial_port.read(1024)
+        print "SERIAL received [%s]\n" % data
+        client_sock.send(data)
+      except:
+        print "Serial Port Error, Reset the port.\n"
+        serial_port.close()
+        time.sleep(0.5)
+        serial_port = comOpen();
+  except:
+    client_sock.close()
+
+  print "BT connection closed\n"
+
+server_sock.close()
+
