@@ -2,8 +2,6 @@ import serial
 import bluetooth
 import time
 
-
-
 def comOpen():
   cport=serial.Serial(
                 port = "/dev/ttyS0",
@@ -52,8 +50,10 @@ def comPLCWrite(cport, addr, len, data):
   print "send result:" + ord(line[0]) +":"+ line[1:] + "<<<\n"
   if ord(line[0]) == 0x06:     #ACK
     print "send successful\n"
+    return True
   else:
     print "send error\n"
+    return False
 
 def comPLCRead(cport, addr, len):
   line = cport.read(1000) #flush the read port
@@ -75,7 +75,12 @@ def comPLCRead(cport, addr, len):
   data = line[11:datalen]
   return data
 
+###############
+#
 # Main routine
+#
+###############
+
 serial_port=comOpen()
 comClear(serial_port)
 
@@ -90,16 +95,33 @@ while True:
   print "\n"
   try:
     while True:
-      data = client_sock.recv(1024)
+    data = ""
+    line_end = False
+      while not line_end:
+        recv_data = client_sock.recv(1024)
+        for c in recv_data:
+        if c != '\n':
+          data += c
+        else:
+          line_end = True
+          
       print "BT received [%s]\n" % data
       try:
-      #data 1
-        if data[0] == 
-        serial_port.write(data)
-        serial_port.flush()
-      
-        data = serial_port.read(1024)
-        print "SERIAL received [%s]\n" % data
+        if data[0] == 'S':
+          s_addr = data[1:7]
+          s_len = data[7:12]
+          s_data = data[11:]
+          if int(len) * 4 == len(s_data):
+            ret = comPLCWrite(serial_port, s_addr, s_len, s_data)
+          else:
+            ret = False
+        elif data[0] == 'R':
+          s_addr = data[1:7]
+          s_len = data[7:12]
+          ret = comPLCRead(serial_port, s_addr, s_len)
+        else:
+          ret = "Command Error"
+        print "SERIAL result [%s]\n" % ret
         client_sock.send(data)
       except:
         print "Serial Port Error, Reset the port.\n"
