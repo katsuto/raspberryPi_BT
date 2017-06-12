@@ -18,7 +18,8 @@ sudo vi /etc/rc.local
 # Turn on bluetooth RFCOMM profile
 sleep 10
 /usr/bin/sudo /bin/hciconfig hci0 piscan
-/usr/bin/sudo /usr/bin/sdptool add sp 
+/usr/bin/sudo /usr/bin/sdptool add sp
+#/usr/bin/sudo /bin/hciconfig hci0 sspmode 0       #必要に応じて
 
 sleepが案外大事。
 再起動して　sudo sdptool browse local　コマンドで、RFCOMMが登録されていることを確認。
@@ -50,4 +51,10 @@ hci0:   Type: BR/EDR  Bus: UART
 
 以下のコマンドで接続テスト。
 sudo rfcomm listen F8:A9:D0:A4:09:22 &
-Blueterm等で接続すると、/dev/rfcomm0 が作成される。
+AndroidからBlueterm等で接続すると、/dev/rfcomm0 が作成される。
+
+BlueTerm　（PlayStoreにある類似品がたくさんあるので注意）
+https://github.com/johnhowe/BlueTerm
+
+参考にするのはこのあたり。
+https://raspberrypi.stackexchange.com/questions/47200/automatically-accepting-bluetooth-connections-on-a-pi-3
