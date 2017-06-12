@@ -1,5 +1,5 @@
 
-Raspberry PiでBluetooth RFCOMMを起動時に実行する。
+## Raspberry PiでBluetooth RFCOMMを起動時に実行する。
 
 パスを確認
 pi@raspberrypi:~$ which sudo
@@ -12,17 +12,19 @@ pi@raspberrypi:~$ which sdptool
 /usr/bin/sdptool
 pi@raspberrypi:~$ 
 
-rc.localを編集
+## rc.localを編集
 sudo vi /etc/rc.local
 
-# Turn on bluetooth RFCOMM profile
-sleep 10
-/usr/bin/sudo /bin/hciconfig hci0 piscan
-/usr/bin/sudo /usr/bin/sdptool add sp
-#/usr/bin/sudo /bin/hciconfig hci0 sspmode 0       #必要に応じて
+    # Turn on bluetooth RFCOMM profile
+    sleep 10
+    /usr/bin/sudo /bin/hciconfig hci0 piscan
+    /usr/bin/sudo /usr/bin/sdptool add sp
+    #/usr/bin/sudo /bin/hciconfig hci0 sspmode 0       #必要に応じて
 
 sleepが案外大事。
-再起動して　sudo sdptool browse local　コマンドで、RFCOMMが登録されていることを確認。
+
+## 再起動して　sudo sdptool browse local　コマンドで、RFCOMMが登録されていることを確認。
+
 Service Name: Serial Port
 Service Description: COM Port
 Service Provider: BlueZ
@@ -41,7 +43,7 @@ Profile Descriptor List:
   "Serial Port" (0x1101)
     Version: 0x0100
 
-hciconfigでISCANが表示される事を確認。
+## hciconfigでISCANが表示される事を確認。
 pi@raspberrypi:~$ sudo hciconfig show
 hci0:   Type: BR/EDR  Bus: UART
         BD Address: B8:27:EB:98:66:00  ACL MTU: 1021:8  SCO MTU: 64:1
@@ -49,12 +51,12 @@ hci0:   Type: BR/EDR  Bus: UART
         RX bytes:1286 acl:4 sco:0 events:69 errors:0
         TX bytes:2677 acl:4 sco:0 commands:57 errors:0
 
-以下のコマンドで接続テスト。
+## 以下のコマンドで接続テスト。
 sudo rfcomm listen F8:A9:D0:A4:09:22 &
 AndroidからBlueterm等で接続すると、/dev/rfcomm0 が作成される。
 
 BlueTerm　（PlayStoreにある類似品がたくさんあるので注意）
 https://github.com/johnhowe/BlueTerm
 
-参考にするのはこのあたり。
+## 参考にするのはこのあたり。
 https://raspberrypi.stackexchange.com/questions/47200/automatically-accepting-bluetooth-connections-on-a-pi-3
