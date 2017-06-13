@@ -19,7 +19,7 @@ def computeCheckSum(s_data):
   sum = 0
   for c in s_data:
     sum += ord(c)
-    sum %= 0xFF
+    sum %= 0x１００
   print "checksum={:02X}".format(sum)
   return "{:02X}".format(sum)
 
