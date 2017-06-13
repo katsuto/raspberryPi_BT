@@ -1,16 +1,16 @@
 
 ## Raspberry PiでBluetooth RFCOMMを起動時に実行する。
 
-パスを確認
-pi@raspberrypi:~$ which sudo
-/usr/bin/sudo
-pi@raspberrypi:~$ which rfcomm
-/usr/bin/rfcomm
-pi@raspberrypi:~$ which hciconfig
-/bin/hciconfig
-pi@raspberrypi:~$ which sdptool
-/usr/bin/sdptool
-pi@raspberrypi:~$ 
+    パスを確認
+    pi@raspberrypi:~$ which sudo
+    /usr/bin/sudo
+    pi@raspberrypi:~$ which rfcomm
+    /usr/bin/rfcomm
+    pi@raspberrypi:~$ which hciconfig
+    /bin/hciconfig
+    pi@raspberrypi:~$ which sdptool
+    /usr/bin/sdptool
+    pi@raspberrypi:~$ 
 
 ## rc.localを編集
 sudo vi /etc/rc.local
@@ -25,34 +25,34 @@ sleepが案外大事。
 
 ## 再起動して　sudo sdptool browse local　コマンドで、RFCOMMが登録されていることを確認。
 
-Service Name: Serial Port
-Service Description: COM Port
-Service Provider: BlueZ
-Service RecHandle: 0x10005
-Service Class ID List:
-  "Serial Port" (0x1101)
-Protocol Descriptor List:
-  "L2CAP" (0x0100)
-  "RFCOMM" (0x0003)
-    Channel: 1
-Language Base Attr List:
-  code_ISO639: 0x656e
-  encoding:    0x6a
-  base_offset: 0x100
-Profile Descriptor List:
-  "Serial Port" (0x1101)
-    Version: 0x0100
+    Service Name: Serial Port
+    Service Description: COM Port
+    Service Provider: BlueZ
+    Service RecHandle: 0x10005
+    Service Class ID List:
+      "Serial Port" (0x1101)
+    Protocol Descriptor List:
+      "L2CAP" (0x0100)
+      "RFCOMM" (0x0003)
+        Channel: 1
+    Language Base Attr List:
+      code_ISO639: 0x656e
+      encoding:    0x6a
+      base_offset: 0x100
+    Profile Descriptor List:
+      "Serial Port" (0x1101)
+        Version: 0x0100
 
 ## hciconfigでISCANが表示される事を確認。
-pi@raspberrypi:~$ sudo hciconfig show
-hci0:   Type: BR/EDR  Bus: UART
-        BD Address: B8:27:EB:98:66:00  ACL MTU: 1021:8  SCO MTU: 64:1
-        UP RUNNING PSCAN ISCAN 
-        RX bytes:1286 acl:4 sco:0 events:69 errors:0
-        TX bytes:2677 acl:4 sco:0 commands:57 errors:0
+    pi@raspberrypi:~$ sudo hciconfig show
+    hci0:   Type: BR/EDR  Bus: UART
+            BD Address: B8:27:EB:98:66:00  ACL MTU: 1021:8  SCO MTU: 64:1
+            UP RUNNING PSCAN ISCAN 
+            RX bytes:1286 acl:4 sco:0 events:69 errors:0
+            TX bytes:2677 acl:4 sco:0 commands:57 errors:0
 
 ## 以下のコマンドで接続テスト。
-sudo rfcomm listen F8:A9:D0:A4:09:22 &
+    sudo rfcomm listen F8:A9:D0:A4:09:22 &
 AndroidからBlueterm等で接続すると、/dev/rfcomm0 が作成される。
 
 BlueTerm　（PlayStoreにある類似品がたくさんあるので注意）
