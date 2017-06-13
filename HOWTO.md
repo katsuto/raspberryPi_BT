@@ -61,6 +61,6 @@ https://github.com/johnhowe/BlueTerm
 ## 参考にするのはこのあたり。
 https://raspberrypi.stackexchange.com/questions/47200/automatically-accepting-bluetooth-connections-on-a-pi-3
 
-## UART経由でPLC MELSEQ-Qにデータを送れるが、受信できない場合
-以下のチップだけだとフロー制御が動かないために、ピンのブリッジが必要。4（DTR)-6（DSR)　7（RTS)-8（CTS)をブリッジするとよい。
+## UART経由でデータを送れるが、受信できない場合
+以下のチップだけだとフロー制御が動かないために、ピンのブリッジが必要なケースがある。4（DTR)-6（DSR)　7（RTS)-8（CTS)をブリッジするとよい。
 http://akizukidenshi.com/catalog/g/gK-06464/
