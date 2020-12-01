@@ -1,1 +1,3 @@
 # raspberryPi_BT
+
+MCプロトコルでのPLCとの通信をRaspberry PiをブリッジにしてBluetoothで通信できるようにする。
